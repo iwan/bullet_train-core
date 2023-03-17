@@ -10,7 +10,8 @@ export default class extends Controller {
     includeTime: Boolean,
     defaultTimeZones: Array,
     cancelButtonLabel: { type: String, default: "Cancel" },
-    applyButtonLabel: { type: String, default: "Apply" }
+    applyButtonLabel: { type: String, default: "Apply" },
+    format: String
   }
 
   connect() {
@@ -28,8 +29,12 @@ export default class extends Controller {
     $(this.fieldTarget).val('')
   }
 
+  getFormat() {
+    return this.formatValue.length > 0 ? this.formatValue : (this.includeTimeValue ? 'MM/DD/YYYY h:mm A' : 'MM/DD/YYYY')
+  }
+
   applyDateToField(event, picker) {
-    const format = this.includeTimeValue ? 'MM/DD/YYYY h:mm A' : 'MM/DD/YYYY'
+    const format = this.getFormat()
     $(this.fieldTarget).val(picker.startDate.format(format))
     // bubble up a change event when the input is updated for other listeners
     this.fieldTarget.dispatchEvent(new CustomEvent('change', { detail: { picker: picker }}))
@@ -90,7 +95,7 @@ export default class extends Controller {
       locale: {
         cancelLabel: this.cancelButtonLabelValue,
         applyLabel: this.applyButtonLabelValue,
-        format: this.includeTimeValue ? 'MM/DD/YYYY h:mm A' : 'MM/DD/YYYY'
+        format: this.getFormat()
       }
     })
 

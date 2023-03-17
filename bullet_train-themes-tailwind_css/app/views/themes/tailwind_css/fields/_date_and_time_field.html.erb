@@ -5,14 +5,19 @@ form ||= current_fields_form
 options ||= {}
 options[:id] ||= form.field_id(method)
 options[:class] = "form-control single-daterange w-full border-slate-300 dark:bg-slate-800 dark:border-slate-900 #{options[:class]}".strip
-options[:value] = form.object.send(method)&.in_time_zone(current_team.time_zone)&.strftime(t('global.formats.date_and_time'))
+options[:value] = form.object.send(method)&.in_time_zone(current_team.time_zone)&.strftime(t('global.formats.date_and_time', default: '%m/%d/%Y %H:%M'))
 options = options.merge({ data: {'fields--date-target': 'field' }})
 other_options ||= {}
 %>
 
 <%= render 'shared/fields/field', form: form, method: method, options: options, other_options: other_options do %>
   <% content_for :field do %>
-    <div class="date-input relative" data-controller="fields--date" data-fields--date-include-time-value="true" data-fields--date-default-time-zones-value="<%= "[\"#{current_user.current_team.time_zone}\",\"#{current_user.time_zone}\"]" %>">
+    <div class="date-input relative" 
+      data-controller="fields--date" 
+      data-fields--date-include-time-value="true" 
+      data-fields--date-default-time-zones-value="<%= "[\"#{current_user.current_team.time_zone}\",\"#{current_user.time_zone}\"]" %>"
+      data-fields--date-format-value="<%= t('global.js_formats.date', default: 'MM/DD/YYYY h:mm A') %>"
+      >
       <%= form.text_field method, options %>
       <% unless options[:disabled] %>
       <button type="button" class="clear py-2 px-3 border border-transparent inline-flex items-center whitespace-nowrap absolute rounded-md top-1 md:top-0.5 right-0.5"
